@@ -303,6 +303,10 @@ div.blogheader.darkmode {
 div.posts.darkmode {
     background-color: #565656;
 }
+div.cookies.darkmode {
+    background-color:  darkgreen;
+    color: #f2f2f2;
+}
 /* The modifications of the webpage for different screen sizes (Increase in size for smaller screen widthes) */
 @media (max-width: 450px) {
     nav{

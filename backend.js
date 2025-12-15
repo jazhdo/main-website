@@ -84,9 +84,10 @@ async function loadContacts() {
         message.textContent = doc.data().message;
 
         box.className = "posts";
-        // email.className = "";
-        // message.className = "";
-
+        if (document.getElementById("darktest").classList.contains('darkmode')) {
+            box.className += ' darkmode';
+            console.log("Darkmode added to div")
+        }
         box.append(id, time, email, message);
         document.getElementById("message-bottom").before(box);
     });

@@ -1,4 +1,4 @@
-/* Version 12/15/2025 */
+/* Version 12/16/2025 */
 a.navbutton{
     border: 0px;
     padding: 0.5vw 1vw;
@@ -80,7 +80,7 @@ body{
     flex-direction: column;
     min-height: 100vh;
 }
-p, li{
+p, li, a#goBack{
     font-size: 1.5vw;
     margin: 0.5vw 1.5vw;
 }
@@ -226,16 +226,13 @@ button.form{
 }
 #customAlert {
     position: fixed;
-    top: 25vw;
+    top: 40vh;
     left: 30vw;
     right: 30vw;
     padding: 20px 30px;
     border-radius: 8px;
     text-align: center;
     background-color: lightgreen;
-}
-#customAlert.hidden {
-    display: none;
 }
 #customAlert button {
     margin-top: 10px;
@@ -357,7 +354,7 @@ a#login-link.darkmode {
     .toptitle{
         font-size: 10vw;
     }
-    p,li{
+    p, li{
         font-size: 5vw;
     }
     h1{
@@ -376,6 +373,14 @@ a#login-link.darkmode {
     button.counter{
         font-size: 8vw;
     }
+    a#login-link{
+        font-size: 8vw;
+    }
+    #customAlert{
+        top: 30vh;
+        left: 10vw;
+        right: 10vw;
+    }
 }
 @media (min-width: 451px) and (max-width: 700px) {
     nav{
@@ -391,7 +396,7 @@ a#login-link.darkmode {
     .toptitle{
         font-size: 9vw;
     }
-    p,li{
+    p, li{
         font-size: 4vw;
     }
     h1{
@@ -405,6 +410,14 @@ a#login-link.darkmode {
     }
     .footer, button.footer{
         font-size: 4vw;
+    }
+    a#login-link{
+        font-size: 6vw;
+    }
+    #customAlert{
+        top: 35vh;
+        left: 20vw;
+        right: 20vw;
     }
 }
 @media (min-width: 701px) and (max-width: 950px) {
@@ -421,7 +434,7 @@ a#login-link.darkmode {
     .toptitle{
         font-size: 6.5vw;
     }
-    p,li{
+    p, li{
         font-size: 3vw;
     }
     h1{
@@ -436,6 +449,14 @@ a#login-link.darkmode {
     .cookiebutton{
         font-size: 3vw;
         padding: 1vw 12vw 1vw 2vw;
+    }
+    a#login-link{
+        font-size: 5vw;
+    }
+    #customAlert{
+        top: 35vh;
+        left: 20vw;
+        right: 20vw;
     }
 }
 @media (min-width: 1400px) and (max-width: 1700px) {
@@ -452,7 +473,7 @@ a#login-link.darkmode {
     .toptitle{
         font-size: 4vw;
     }
-    p,li{
+    p, li{
         font-size: 1.5vw;
     }
     h1{
@@ -463,6 +484,9 @@ a#login-link.darkmode {
     }
     .cookiebutton{
         font-size: 1.5vw;
+    }
+    a#login-link{
+        font-size: 2.5vw;
     }
 }
 @media (min-width: 1701px){
@@ -479,7 +503,7 @@ a#login-link.darkmode {
     .toptitle{
         font-size: 50px;
     }
-    p,li{
+    p, li{
         font-size: 20px;
         margin: 0.5vw;
     }
@@ -505,5 +529,8 @@ a#login-link.darkmode {
     button.counter{
         font-size: 1vw;
         padding: 0.5vw;
+    }
+    a#login-link{
+        font-size: 2vw;
     }
 }

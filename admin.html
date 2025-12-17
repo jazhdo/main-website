@@ -20,19 +20,10 @@
             <a href="/about.html" draggable="false" class="navbutton">About</a>
         </nav>
     </header>
-    <form id="adminLoginForm">
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-    </form>
     <div id="main">
-        <h1>Admin Page</h1>
-        <button id="logout" style="display: none;">Log Out</button>
+        <h1 id="adminTitle" style="display: none;">Admin Page</h1>
+        <a id="goBack" href="/login.html" style="display: none;">Back</a>
         <p id="message-bottom"></p>
-    </div>
-    <div id="customAlert" class="hidden">
-        <p id="alertMessage"></p>
-        <button id="alertClose">OK</button>
     </div>
     <div class="cookies">
         <h2 class="cookieheading">This website uses cookies</h2>
@@ -44,7 +35,7 @@
         </p>
     </div>
     <footer>
-        <p id="darktest" class="footer">Updated: 12/15/2025 - jazhdo</p>
+        <p id="darktest" class="footer">Updated: 12/16/2025 - jazhdo</p>
         <a class="footer" href="/privacy.html">Privacy</a>
         <a class="footer" href="/terms.html">Terms</a>
         <button onclick="lightmode()" id="lightmode" class="footer lightmode"></button>

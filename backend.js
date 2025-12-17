@@ -1,4 +1,4 @@
-// Version 12/15/2025
+// Version 12/16/2025
 
 // Firebase stuff
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -31,32 +31,42 @@ const auth = getAuth(app);
 
 // Check if the form is submitted
 if (document.getElementById("contactForm") !== null) {
+    let currentlyWorking = false;
     document.getElementById("contactForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+        if (currentlyWorking === false) {
+            currentlyWorking = true;
+            // Get trimmed values (Whitespace in front & back removed)
+            const email = document.getElementById("contactEmail").value.trim();
+            const message = document.getElementById("contactMessage").value.trim();
+            const sentDate = new Date()
 
-        // Get trimmed values (Whitespace in front & back removed)
-        const email = document.getElementById("contactEmail").value.trim();
-        const message = document.getElementById("contactMessage").value.trim();
-        const sentDate = new Date()
+            // Prevent blank submissions
+            if (!email || !message) {
+                window.showAlert("Please fill in both the email and message fields before submitting.");
+                return; // Stop the submission
+            }
+            
+            document.getElementById("contactForm").style.display = "none";
+            document.getElementById("contactFormStatus").style.display = "";
 
-        // Prevent blank submissions
-        if (!email || !message) {
-            window.showAlert("Please fill in both the email and message fields before submitting.");
-            return; // Stop the submission
-        }
-        try {
-            const record = await addDoc(collection(db, "messages"), {
-                email: email,
-                message: message,
-                createdAt: sentDate
-            });
-            window.showAlert("Thank you! Your message was successfully sent. \
-                Here's your message ID for future inquiries: " + record.id);
-            document.getElementById("contactForm").reset();
-        } catch (error) {
-            window.showAlert("There was an error sending the message: ", error, ". \
-                Please try again later or on a different device.");
-            window.showAlert("Oops! Something went wrong.");
+            try {
+                const record = await addDoc(collection(db, "messages"), {
+                    email: email,
+                    message: message,
+                    createdAt: sentDate
+                });
+                window.showAlert("Thank you! Your message was successfully sent. \
+                    Here's your message ID for future inquiries: " + record.id);
+                document.getElementById("contactForm").reset();
+            } catch (error) {
+                window.showAlert("There was an error sending the message: ", error, ". \
+                    Please try again later or on a different device.");
+                window.showAlert("Oops! Something went wrong.");
+            };
+            document.getElementById("contactForm").style.display = "";
+            document.getElementById("contactFormStatus").style.display = "none";
+            currentlyWorking = false;
         }
     });
 }
@@ -97,6 +107,7 @@ async function loadContacts() {
         message.textContent = doc.data().message;
 
         box.className = "posts";
+        box.style.display = "none";
         if (document.getElementById("darktest").classList.contains('darkmode')) {
             box.className += ' darkmode';
             console.log("Darkmode added to posts")
@@ -105,20 +116,41 @@ async function loadContacts() {
         document.getElementById("message-bottom").before(box);
     });
 }
-window.loadContacts = loadContacts;
 
 function redirectToHome() {
-    window.location.href = "/about.html";
+    window.location.href = "/login.html";
 }
 
-// What to do after login
+// Show after logged in on admin page
+let showMessages = false;
 function showAdminContent(user) {
-    loginForm.style.display = "none";
     const message = document.createElement("p");
+    const showButton = document.createElement("button");
+    showButton.textContent = "Show messages";
+    showButton.id = "showMessages";
+    showButton.onclick = () => {
+        if (showMessages === false) {
+            document.querySelectorAll(".posts").forEach(e => {
+                e.style.display = "";
+                document.getElementById("showMessages").innerText = "Hide messages";
+            });
+            showMessages = true;
+        } else if (showMessages === true) {
+            document.querySelectorAll(".posts").forEach(e => {
+                e.style.display = "none";
+                document.getElementById("showMessages").innerText = "Show messages";
+            });
+            showMessages = false;
+        }
+    };
     message.textContent = `Welcome. You are signed in as UID: ${user.uid} Email: ${user.email}`;
-    document.getElementById("message-bottom").before(message);
+    document.getElementById("message-bottom").before(message, showButton);
     loadContacts();
-    document.getElementById("logout").style.display = "";
+    document.querySelectorAll(".posts").forEach(e => {
+        e.style.display = "";
+    });
+    document.getElementById("adminTitle").style.display = "";
+    document.getElementById("goBack").style.display = "";
     document.getElementById("message-bottom").innerText = "";
 }
 
@@ -127,55 +159,6 @@ function profileLoad(user) {
     document.getElementById("profileEmail").innerText = `User Email: ${user.email}`
 }
 
-if (document.getElementById("message-bottom") !== null) {
-    // Handle login form submission
-    document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        console.log("Logging in...")
-
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Check if user is admin
-            const adminSnap = await getDoc(doc(db, "admins", user.uid));
-            if (!adminSnap.exists()) {
-                alert("Access denied: You are not an admin. (If you actually are, ask to be added to the admins file)");
-                await signOut(auth);
-                redirectToHome();
-            }
-        } catch (error) {
-            window.showAlert("Login failed because of error: " + error);
-        }
-    });
-
-    // Listen for auth state changes
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const adminSnap = await getDoc(doc(db, "admins", user.uid));
-            if (adminSnap.exists()) {
-                showAdminContent(user);
-            } else {
-                await signOut(auth);
-                redirectToHome();
-            }
-        } else {
-            document.getElementById("message-bottom").innerText = "Please log in to access the admin page.";
-        }
-    });
-    document.getElementById("logout").addEventListener("click", async () => {
-        try {
-            await signOut(auth);
-            redirectToHome();
-        } catch (err) {
-            window.showAlert("Logout failed because of error:", err);
-        }
-    });
-}
 let loginOption = true;
 let loginError = false;
 if (document.getElementById("loginForm") !== null) {
@@ -185,14 +168,14 @@ if (document.getElementById("loginForm") !== null) {
             document.getElementById("loginRules").innerText = "Requirements: Valid email address, 6+ characters password";
             document.getElementById("loginSubmit").innerText = "Sign Up";
             document.getElementById("otherInstead").innerText = "Login instead";
-            loginOption = false
+            loginOption = false;
         } else if (loginOption === false) {
             document.getElementById("loginTitle").innerText = "Login";
             document.getElementById("loginRules").innerText = "";
             document.getElementById("loginSubmit").innerText = "Login";
             document.getElementById("otherInstead").innerText = "Sign up instead";
-            loginOption = true
-        }
+            loginOption = true;
+        };
     });
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -202,7 +185,19 @@ if (document.getElementById("loginForm") !== null) {
             document.getElementById("login").style.display = "none";
             document.getElementById("content").style.display = "";
             
-            profileLoad(user)
+            profileLoad(user);
+
+            // Check if user is admin
+            const adminSnap = await getDoc(doc(db, "admins", user.uid));
+            if (adminSnap.exists()) {
+                if (document.getElementById("message-bottom") !== null) {
+                    showAdminContent(user);
+                } else if (document.getElementById("adminLink") !== null) {
+                    document.getElementById("adminLink").innerHTML = "Admin page link: <a href='admin.html'>link</a>";
+                };
+            };
+        } else {
+            document.getElementById("adminLink").innerHTML = "<p id='adminLink'></p>";
         }
     });
     document.getElementById("signOut").addEventListener("click", async () => {
@@ -211,7 +206,7 @@ if (document.getElementById("loginForm") !== null) {
             window.location.reload();
         } catch (err) {
             window.showAlert("Logout failed because of error:", err);
-        }
+        };
     });
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -225,16 +220,7 @@ if (document.getElementById("loginForm") !== null) {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                window.showAlert(`You have successfully logged in with your email address: ${user.email}.`);
-
-                // Admin authorization stuff for later coding after current admin stuff is removed
-                // // Check if user is admin
-                // const adminSnap = await getDoc(doc(db, "admins", user.uid));
-                // if (!adminSnap.exists()) {
-                //     window.showAlert("Access denied: You are not an admin.");
-                //     await signOut(auth);
-                //     redirectToHome();
-                // }
+                window.showAlert(`You have successfully logged in with email address ${user.email}.`);
             } catch (error) {
                 const err = error.code;
                 let message = '';
@@ -301,4 +287,23 @@ if (document.getElementById("loginForm") !== null) {
             window.showAlert(`Variable loginOption has not returned true or false. Please report the status "${loginOption}" of loginOption to the developers.`);
         }
     });
-}
+} else if (document.getElementById("message-bottom") !== null) {
+    onAuthStateChanged(auth, async (user) => {
+        if (user !== null) {
+            try {
+                const adminSnap = await getDoc(doc(db, "admins", user.uid));
+                if (adminSnap.exists()) {
+                    showAdminContent(user);
+                } else {
+                    alert("Access denied: You are not an admin. (If you actually are, ask to be added to the admins file)");
+                    redirectToHome();
+                };
+            } catch(error) {
+                window.showAlert(`There was an error getting admin details. Please try again. Error: ${error}`);
+            };
+        } else {
+            alert("Please sign in before continuing.");
+            redirectToHome();
+        };
+    });
+};

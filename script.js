@@ -1,4 +1,4 @@
-// Version 12/15/2025
+// Version 12/16/2025
 function testa() {
     document.getElementById("demo").innerHTML = "<a>test successful</a>";
 }
@@ -18,7 +18,11 @@ function hide(list) {
 let jstestcount = 1
 function jstest() {
     document.getElementById("jstest").innerText = "Test #" + jstestcount + " Successful.";
-    jstestcount += 1
+    jstestcount += 1;
+    refreshDate('untilChristmas', 2025, 12, 25, 'Christmas');
+    refreshDate('untilNewYears', 2026, 1, 1, 'New Years');
+    refreshDate('untilValentines', 2026, 2, 14, 'Valentines Day');
+    refreshDate('untilChineseNewYears', 2026, 2, 17, 'Chinese New Years');
 }
 function addCounter() {
     counter = Number(counter);
@@ -164,18 +168,24 @@ function refreshDate(elementId, year, month, day, subject) {
     document.getElementById(elementId).innerText = subject + " (" + month + "/" + day + "/" + year + "): in " + until + " days" ;
 }
 function showAlert(message) {
-    const alertBox = document.getElementById("customAlert");
-    document.getElementById("alertMessage").innerText = message;
-    alertBox.classList.remove("hidden");
-    if (localStorage.getItem('lightmode') === 'light' || window.matchMedia("(prefers-color-scheme: light)").matches) {
-        document.getElementById("customAlert").classList.add("darkmode");
-        document.getElementById("alertMessage").classList.add("darkmode");
-        document.getElementById("alertClose").classList.add("darkmode");
-    }
-    document.getElementById("alertClose").onclick = () => {
-        alertBox.classList.add("hidden");
+    const box = document.createElement("div");
+    const content = document.createElement("p");
+    const button = document.createElement("button");
+
+    box.id = "customAlert";
+    content.id = "alertMessage";
+    button.id = "alertClose";
+
+    content.innerText = message;
+    button.innerText = "OK";
+
+    button.onclick = () => {
+        document.getElementById("customAlert").remove();
     };
-}
+
+    box.append(content, button);
+    document.getElementById("main").after(box);
+};
 window.showAlert = showAlert;
 // Initial check
 if (localStorage.getItem('lightmode') === 'auto' || localStorage.getItem('lightmode') === null) {
@@ -255,9 +265,5 @@ if (document.getElementById('counterForm') !== null) {
 }
 if (document.getElementById("jstest") !== null) {
     jstest();
-    refreshDate('untilChristmas', 2025, 12, 25, 'Christmas');
-    refreshDate('untilNewYears', 2026, 1, 1, 'New Years');
-    refreshDate('untilValentines', 2026, 2, 14, 'Valentines Day');
-    refreshDate('untilChineseNewYears', 2026, 2, 17, 'Chinese New Years');
-}
+};
 console.log("Initial Code Completed.");

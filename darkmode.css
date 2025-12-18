@@ -36,7 +36,7 @@ div.blogheader.darkmode, #customAlert.darkmode, #lightmode.darkmode {
 div.posts.darkmode {
     background-color: #565656;
 }
-div.cookies.darkmode, #alertClose.darkmode {
+div#cookies.darkmode, #alertClose.darkmode {
     background-color:  darkgreen;
     color: #f2f2f2;
 }

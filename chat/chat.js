@@ -3,7 +3,7 @@
 // Firebase stuff
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc, setDoc, updateDoc, arrayUnion, increment 
+    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc, setDoc, updateDoc, arrayUnion, increment, arrayRemove 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged
@@ -29,10 +29,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const messageCollection = collection(db, 'chat');
-let chatId = 0;
+let chatId = '';
 
 // Functions
-async function sendMessage(chatId, messageData) {
+async function sendMessage(messageData) {
     // metaRef is main data doc, metaSnap is a snapshot of that main data doc
     const metaRef = doc(db, "chats", chatId);
     const metaSnap = await getDoc(metaRef);
@@ -66,15 +66,30 @@ async function sendMessage(chatId, messageData) {
         updatedAt: new Date()
     }, { merge: true });
 };
-
+async function addUser(userUID) {
+    const metaRef = doc(db, "chats", chatId);
+    await setDoc(metaRef, {
+        participants: arrayUnion(userUID),
+        updatedAt: new Date()
+    }, { merge: true });
+};
+async function removeUser(userUID) {
+    const metaRef = doc(db, "chats", chatId);
+    await setDoc(metaRef, {
+        participants: arrayRemove(userUID),
+        updatedAt: new Date()
+    }, { merge: true });
+}
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
         alert("Please login to access the chat service. This is implemented for safety reasons.")
         window.location.href = '/login.html?redirect=/chat/';
     }
-    document.getElementById("chatForm").addEventListener("submit", async (e) => {
+    document.getElementById("typeForm").addEventListener("submit", async (e) => {
         e.preventDefault();
-        message = document.getElementById("");
 
+        const message = document.getElementById("typeInput").value.trim();
+
+        alert(`Your message containing the contents ${message} has been sent to nowhere.`);
     });
 });

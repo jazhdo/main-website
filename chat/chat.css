@@ -1,0 +1,148 @@
+header {
+    background-color: lightgreen;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+body {
+    margin: 0px;
+}
+#toptitle {
+    margin: 0.5vw 3vw;
+    font-size: 3vw;
+    text-decoration: none;
+    color: black;
+}
+#settingsIcon {
+    width: 4vw;
+    height: 4vw;
+    
+    background-image: url('/chat/settings.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    display: block;
+}
+#settingsIconButton {
+    width: 4vw; 
+    height: 4vw;
+
+    margin: 0.5vw;
+    
+    background-color: lightgreen;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100vw;
+}
+#settingsIconButton:hover {
+    background-color: lightgray;
+}
+#main {
+    display: inline-flex;
+    flex-direction: row;
+    width: 100vw;
+    background-color: lightgray;
+    overflow: hidden; 
+}
+#chatsBox {
+    flex: 2;
+}
+#chatsTitle {
+    padding: 0px;
+    font-size: 1.5vw;
+    margin: 0px;
+    text-align: center;
+}
+#chatsList {
+    background-color: rgb(200, 200, 200);
+    padding: 1vw;
+}
+.chats {
+    border-radius: 2vw;
+    padding: 0.5px 1vw;
+    background-color: rgb(228, 228, 228);
+    margin-bottom: 1vw;
+}
+#messagesBox {
+    flex: 5;
+    border-left: solid;
+    border-color: black;
+    border-left-width: 0.5vw;
+    overflow: hidden;
+}
+#chatBar {
+    background-color: rgb(200, 200, 200);
+    color: black;
+    font-size: 2vw;
+    padding: 0.5vw;
+}
+#messages {
+    padding: 0.5vw;
+    overflow-y: auto;
+    height: 60vh;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.posts {
+    border-radius: 2vw;
+    padding: 0px 1vw;
+    margin: 1vw;
+    margin-top: 0px;
+    width: fit-content;
+    max-width: calc(100% - 10vw);
+}
+.right {
+    margin-left: auto;
+    background-color: rgb(228, 228, 255);
+    border-bottom-right-radius: 0px;
+}
+.left {
+    margin-right: auto;
+    background-color: rgb(228, 228, 228);
+    border-bottom-left-radius: 0px;
+}
+#typeBar {
+    background-color: rgb(200, 200, 200);
+    padding: 0.5vw;
+    text-align: center;
+}
+#typeInput {
+    width: 30vw;
+    border-radius: 100vw;
+    border: 0px;
+    height: 1.5vw;
+    padding-left: 1vw;
+    padding-top: 0.75vw;
+}
+#typeBar button {
+    border-radius: 100vw;
+    border-width: 0px;
+    padding: 0.2vw 0.4vw;
+    height: 2vw;
+    width: 4vw;
+}
+#typeBar button:hover {
+    background-color: rgb(150, 150, 150);
+}
+footer {
+    background-color: lightgreen;
+    text-align: center;
+    padding: 1vw 0px;
+    bottom: 0px;
+    width: 100vw;
+}
+.footer {
+    display: inline;
+    text-decoration: none;
+    color: black;
+    margin: 0px 1vw;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}

@@ -3,43 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Call - jazhdo</title>
-    <!-- <link rel="stylesheet" href="/style.css"> -->
+    <title>Chat - jazhdo</title>
+    <link rel="stylesheet" href="/chat/chat.css">
     <link rel="icon" href="/icon.png">
 </head>
 <body>
     <header>
-        <a href="/" draggable="false" class="toptitle">jazhdo</a>
-        <button id="settingsIcon"><img src="/settings."></button>
+        <a href="/" draggable="false" id="toptitle">jazhdo</a>
+        <button id="settingsIconButton">
+            <div id="settingsIcon"></div>
+        </button>
     </header>
-    <div id="chats">
-        <h1>Chats</h1>
-    </div>
-    <div id="messages">
-        <div id="chatBar">
-            <a id="chatTitle"></a>
+    <div id="main">
+        <div id="chatsBox">
+            <div id="chatsTitle">
+                <h1>Chats</h1>
+            </div>
+            <div id="chatsList">
+                <div class="chats">
+                    <h2>Chat 1</h2>
+                    <p>Last chat message</p>
+                </div>
+                <div class="chats">
+                    <h2>Chat 1</h2>
+                    <p>Last chat message</p>
+                </div>
+                <div id="chatBottom"></div>
+            </div>
         </div>
-        <div id="chatTypeBar">
-            <form id="chatTypeForm">
-                <input placeholder="Type here.." id="chatTypeInput">
-            </form>
+        <div id="messagesBox">
+            <div id="chatBar">
+                <a id="chatTitle">Chat title placeholder</a>
+            </div>
+            <div id="messages">
+                <div class="posts left">
+                    <p>User1: This is the newest message???</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus amet fugit laboriosam nulla architecto reiciendis non eius dignissimos ad praesentium corrupti minus nemo, officiis tempora ipsa rem culpa labore natus sapiente iusto quibusdam? Ex, hic quisquam explicabo temporibus suscipit soluta provident perferendis dolore pariatur nobis. Accusantium obcaecati quae iusto voluptas deserunt in provident rem maiores omnis. Recusandae veritatis consequatur aut molestiae dolorem impedit, libero ipsum delectus provident? Atque debitis eligendi, saepe quod libero modi accusamus tenetur tempore totam laudantium repellat velit autem ut eos repudiandae! Illum nisi dolorum corrupti ad excepturi qui totam, numquam, iste quaerat molestiae expedita in libero?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore omnis voluptas rerum soluta. Libero vero aspernatur repudiandae maxime aperiam quaerat reprehenderit nostrum ut dignissimos soluta! Non eius ut numquam reiciendis, perferendis quos animi modi in sit officia illum unde sint sunt dolores ad iusto consequatur aliquid delectus nostrum, quam tempore!</p>
+                </div>
+                <div class="posts left">
+                    <p>User1: Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, sit?</p>
+                </div>
+                <div class="posts right">
+                    <p>This is the bottom</p>
+                </div>
+            </div>
+            <div id="typeBar">
+                <!-- Maybe add file attachment option -->
+                <form id="typeForm">
+                    <textarea placeholder="Type here.." id="typeInput"></textarea>
+                    <button type="submit">Submit</button>
+                </form>
+                <!-- Possibly add emoji selection menu -->
+            </div>
         </div>
-    </div>
-    <div class="cookies">
-        <h2 class="cookieheading">This website uses cookies</h2>
-        <p>
-            Your perference will be stored until you clear your browser's cache. 
-            By clicking accept, you also accept to the <a href="/privacy.html">privacy policy</a>.
-            <button onclick="cookiemanage(true)" class="cookiebutton">Accept</button>
-            <button onclick="cookiemanage(false)" class="cookiebutton">Decline</button>
-        </p>
     </div>
     <footer>
         <p id="darktest" class="footer">Updated: 12/16/2025 - jazhdo</p>
         <a class="footer" href="/privacy.html">Privacy</a>
         <a class="footer" href="/terms.html">Terms</a>
         <!-- <button onclick="lightmode()" id="lightmode" class="footer"></button> -->
-        <script type="module" src="/chat/chat.js"></script>
+        <script type="module" src="chat.js"></script>
         <script src="/script.js"></script>
     </footer>
 </body>

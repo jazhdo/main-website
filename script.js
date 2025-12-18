@@ -111,21 +111,6 @@ function disableCounterPreset() {
         document.getElementById("disableCounter").innerText = "Click to enable counter settings";
     }
 }
-function cookiemanage(status) {
-    hide(['.cookies', '.cookiebutton', '.cookieheading'])
-    if (status == 'true' || status == true) {
-        console.log("Cookies Accepted.")
-        localStorage.setItem("Cookies", true)
-    }
-    else if (status == 'false' || status == false) {
-        console.log("Cookies Declined.")
-        localStorage.setItem("Cookies", false)
-    }
-    else {
-        console.log("Error. Cookies button has not returned true or false.")
-        console.log("Cookies Status:", status)
-    }   
-}
 //Check and update mode (Not set dark mode)
 function darkmode() {
     if (localStorage.getItem('lightmode') === 'dark') {
@@ -187,6 +172,50 @@ function showAlert(message) {
     document.getElementById("main").after(box);
 };
 window.showAlert = showAlert;
+function manageCookies(status) {
+    if (status === true) {
+        console.log("Cookies Accepted.");
+        localStorage.setItem("Cookies", true);
+    } else if (status === false) {
+        console.log("Cookies Declined.")
+        localStorage.setItem("Cookies", false)
+    } else {
+        console.log(`When calling function manageCookies in script.js, status gave the value: ${status} instead of true or false.`)
+    };
+    if (document.getElementById("cookies") !== null) {
+        document.getElementById("cookies").remove();
+    };
+}
+function addCookiesBar() {
+    const textContent = `
+        Your perference will be stored until you clear your browser's cache. 
+        By clicking accept, you also accept to the `
+    const box = document.createElement("div");
+    const heading = document.createElement("h2");
+    const text = document.createElement("p");
+    const privacyLink = document.createElement("a");
+    const acceptButton = document.createElement("button");
+    const declineButton = document.createElement("button");
+
+    heading.innerText = 'This website uses cookies.';
+    text.innerText = textContent;
+    privacyLink.innerText = 'privacy policy';
+    privacyLink.href = '/privacy.html';
+    acceptButton.innerText = 'Accept';
+    declineButton.innerText = 'Decline';
+
+    acceptButton.addEventListener('click', () => manageCookies(true));
+    declineButton.addEventListener('click', () => manageCookies(false));
+
+    box.id = 'cookies';
+    heading.className = 'cookieheading';
+    acceptButton.className = 'cookiebutton';
+    declineButton.className = 'cookiebutton';
+
+    text.append(privacyLink, '.', document.createElement("br"), acceptButton, declineButton);
+    box.append(heading, text);
+    document.getElementById("main").after(box);
+};
 // Initial check
 if (localStorage.getItem('lightmode') === 'auto' || localStorage.getItem('lightmode') === null) {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) { 
@@ -206,11 +235,12 @@ if (localStorage.getItem('lightmode') === 'auto' || localStorage.getItem('lightm
     darkmode();
     console.log(localStorage.getItem('lightmode'))
 }
-document.getElementById('lightmode').innerHTML = 'Current Mode: ' + localStorage.getItem('lightmode');
-
-if (localStorage.getItem('Cookies') !== null) {
-    cookiemanage(localStorage.getItem('Cookies'))
-}
+if (document.getElementById('lightmode') !== null) {
+    document.getElementById('lightmode').innerHTML = 'Current Mode: ' + localStorage.getItem('lightmode');
+};
+if (localStorage.getItem('Cookies') == null) {
+    addCookiesBar();
+};
 
 console.log('Cookies Status: ' + localStorage.getItem('Cookies'))
 

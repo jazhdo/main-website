@@ -68,6 +68,12 @@ a{
 button:hover{
     background-color: darkgreen;
     cursor: pointer;
+    border-radius: 100px;
+}
+button{
+    border-radius: 100px;
+    background-color: rgb(164, 255, 164);
+    border-color: lightgreen;
 }
 button:active, .toptitle:active{
     cursor: wait;
@@ -264,75 +270,6 @@ div#header-top {
     display: flex;
     width: 100%;
     margin-bottom: 1vw;
-}
-/* Dark Mode Settings */
-button.darkmode:hover, a.navbutton.darkmode:hover{
-    background-color:green;
-}
-.toptitle.darkmode, .footer.darkmode, a.blogbutton.darkmode, header.darkmode, 
-footer.darkmode, button.darkmode, button.footer.darkmode:hover, a.navbutton.darkmode{
-    background-color: darkgreen;
-    color: #f2f2f2;
-}
-body.darkmode{
-    background-color: #121212;
-    color: #f2f2f2;
-}
-a.darkmode{
-    color: #869ad1;
-}
-.footer-middle.darkmode{
-    color: darkgreen;
-}
-#lightmode.darkmode{
-    background-color: darkgreen;
-}
-button.counter.darkmode{
-    border-color: darkgreen;
-}
-input.darkmode {
-    background-color: #565656;
-    color: #f2f2f2;
-    border: 0px;
-}
-textarea.darkmode {
-    background-color: #565656;
-    color: #f2f2f2;
-    border: 0px;
-}
-a.blogfind.darkmode {
-    background-color: darkgreen;
-    color: #f2f2f2;
-    border-color: #f2f2f2;
-}
-a.blogfind.darkmode:hover {
-    background-color: green;
-}
-div.blogheader.darkmode {
-    background-color: darkgreen;
-}
-div.posts.darkmode {
-    background-color: #565656;
-}
-div.cookies.darkmode {
-    background-color:  darkgreen;
-    color: #f2f2f2;
-}
-a#login-link.darkmode {
-    color: #f2f2f2;
-}
-#customAlert.darkmode {
-    background-color: darkgreen;
-}
-#alertMessage.darkmode {
-    color: #f2f2f2;
-}
-#alertClose.darkmode {
-    background-color: darkgreen;
-    color: #f2f2f2;
-}
-#alertClose.darkmode:hover {
-    background-color: green;
 }
 /* The modifications of the webpage for different screen sizes (Increase in size for smaller screen widthes) */
 @media (max-width: 450px) {

@@ -162,6 +162,7 @@ function profileLoad(user) {
 let loginOption = true;
 let loginError = false;
 if (document.getElementById("loginForm") !== null) {
+    // After user clicks login instead or sign up instead
     document.getElementById("otherInstead").addEventListener("click", () => {
         if (loginOption === true) {
             document.getElementById("loginTitle").innerText = "Sign Up";
@@ -177,8 +178,17 @@ if (document.getElementById("loginForm") !== null) {
             loginOption = true;
         };
     });
+    // What to do after firebase loads or auth change detected
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            try {
+                const urlData = new URLSearchParams(window.location.search);
+                if (urlData.get('redirect') !== null) {
+                    window.location.href = urlData.get('redirect');
+                };
+            } catch (error) {
+                window.showAlert(`Url redirect detection broken. Error: ${error}.`)
+            }
             console.log(`User Email: ${user.email}`);
             console.log(`User UID: ${user.uid}`);
             
@@ -307,3 +317,10 @@ if (document.getElementById("loginForm") !== null) {
         };
     });
 };
+onAuthStateChanged(auth, async (user) => {
+    if (user !== null) {
+        document.getElementById("login-link").innerText = "Profile";
+    } else {
+        document.getElementById("login-link").innerText = "Login/Sign up";
+    };
+});

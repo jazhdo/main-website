@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Call - jazhdo</title>
-    <link rel="stylesheet" href="/style.css">
+    <!-- <link rel="stylesheet" href="/style.css"> -->
     <link rel="icon" href="/icon.png">
 </head>
 <body>
     <header>
-        <div id="header-top">
-            <a href="/" draggable="false" class="toptitle">jazhdo</a>
-            <a href="/login.html" id="login-link">Login</a>
-        </div>
-        <nav>
-            <a href="/" draggable="false" class="navbutton">Home</a>
-            <a href="/blog/" draggable="false" class="navbutton">Blog</a>
-            <a href="/contact.html" draggable="false" class="navbutton">Contact</a>
-            <a href="/about.html" draggable="false" class="navbutton">About</a>
-        </nav>
+        <a href="/" draggable="false" class="toptitle">jazhdo</a>
+        <button id="settingsIcon"><img src="/settings."></button>
     </header>
-    <div id="main">
-        <h1>Call Home</h1>
-        <p>This is a call page that will have content added soon after I code it.</p>
+    <div id="chats">
+        <h1>Chats</h1>
+    </div>
+    <div id="messages">
+        <div id="chatBar">
+            <a id="chatTitle"></a>
+        </div>
+        <div id="chatTypeBar">
+            <form id="chatTypeForm">
+                <input placeholder="Type here.." id="chatTypeInput">
+            </form>
+        </div>
     </div>
     <div class="cookies">
         <h2 class="cookieheading">This website uses cookies</h2>
@@ -37,8 +38,8 @@
         <p id="darktest" class="footer">Updated: 12/16/2025 - jazhdo</p>
         <a class="footer" href="/privacy.html">Privacy</a>
         <a class="footer" href="/terms.html">Terms</a>
-        <button onclick="lightmode()" id="lightmode" class="footer lightmode"></button>
-        <script type="module" src="/backend.js"></script>
+        <!-- <button onclick="lightmode()" id="lightmode" class="footer"></button> -->
+        <script type="module" src="/chat/chat.js"></script>
         <script src="/script.js"></script>
     </footer>
 </body>

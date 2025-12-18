@@ -1,0 +1,45 @@
+/* Dark Mode Settings Only*/
+button.darkmode:hover, a.navbutton.darkmode:hover, a.blogfind.darkmode:hover, #alertClose.darkmode:hover{
+    background-color:green;
+}
+.toptitle.darkmode, .footer.darkmode, a.blogbutton.darkmode, header.darkmode, 
+footer.darkmode, button.darkmode, button.footer.darkmode:hover, a.navbutton.darkmode{
+    background-color: darkgreen;
+    color: #f2f2f2;
+}
+body.darkmode{
+    background-color: #121212;
+    color: #f2f2f2;
+}
+a.darkmode{
+    color: #869ad1;
+}
+.footer-middle.darkmode{
+    color: darkgreen;
+}
+button.counter.darkmode{
+    border-color: darkgreen;
+}
+input.darkmode, textarea.darkmode {
+    background-color: #565656;
+    color: #f2f2f2;
+    border: 0px;
+}
+a.blogfind.darkmode {
+    background-color: darkgreen;
+    color: #f2f2f2;
+    border-color: #f2f2f2;
+}
+div.blogheader.darkmode, #customAlert.darkmode, #lightmode.darkmode {
+    background-color: darkgreen;
+}
+div.posts.darkmode {
+    background-color: #565656;
+}
+div.cookies.darkmode, #alertClose.darkmode {
+    background-color:  darkgreen;
+    color: #f2f2f2;
+}
+a#login-link.darkmode, #alertMessage.darkmode {
+    color: #f2f2f2;
+}

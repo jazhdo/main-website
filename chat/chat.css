@@ -1,21 +1,74 @@
+/* Version 12/18/2025 */
+
+/* 
+@media options:
+    Extra small is 0 - 400 width (Not to be added until after some spare time) (iphone 13 mini size)
+    Small is 401 - 600 width
+    Default is 601-950 width
+    Big is 951 - 1400 width
+    Extra big is 1401 - 2000 width (add later?)
+*/
+
 header {
     background-color: lightgreen;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 body {
     margin: 0px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 #toptitle {
-    margin: 0.5vw 3vw;
-    font-size: 3vw;
+    margin: 1vw 3vw;
+    font-size: 5vw;
     text-decoration: none;
     color: black;
+    flex: 2;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1;
+}
+#menuIconButton, #settingsIconButton {
+    flex: 1; /* This makes both buttons take up equal available space */
+    display: flex;
+    max-width: 50px; /* Limits the "slot" so they don't crush the title */
+}
+#menuIconButton {
+    /* Use vw but add a minimum pixel size for mobile usability */
+    width: 7vw; 
+    height: 7vw;
+    min-width: 40px; 
+    min-height: 40px;
+
+    margin: 0.5vw;
+    background-color: lightgreen;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 50%; /* standard circle */
+    transition: background-color 0.2s ease;
+}
+
+#menuIcon {
+    width: 60%; 
+    height: 60%;
+    
+    background-image: url('/chat/hamburger.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
 }
 #settingsIcon {
-    width: 4vw;
-    height: 4vw;
+    width: 100%; 
+    height: 100%;
     
     background-image: url('/chat/settings.png');
     background-size: contain;
@@ -25,8 +78,8 @@ body {
     display: block;
 }
 #settingsIconButton {
-    width: 4vw; 
-    height: 4vw;
+    width: 6vw; 
+    height: 6vw;
 
     margin: 0.5vw;
     
@@ -36,26 +89,30 @@ body {
     padding: 0;
     
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     border-radius: 100vw;
 }
-#settingsIconButton:hover {
-    background-color: lightgray;
-}
 #main {
-    display: inline-flex;
+    display: flex;
     flex-direction: row;
-    width: 100vw;
+    flex: 1;
+    width: 100%;
+    height: 100%;
     background-color: lightgray;
     overflow: hidden; 
 }
 #chatsBox {
     flex: 2;
+    transition: all 0.5s ease;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    overflow: hidden;
+    min-width: 10vw;
 }
 #chatsTitle {
     padding: 0px;
-    font-size: 1.5vw;
+    font-size: 2vw;
     margin: 0px;
     text-align: center;
 }
@@ -63,18 +120,55 @@ body {
     background-color: rgb(200, 200, 200);
     padding: 1vw;
 }
+.hidden-sidebar {
+    flex: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    /* margin: 0 !important;
+    padding: 0 !important; */
+    opacity: 0;
+    pointer-events: none;
+}
+.hidden-sidebar + #resizer {
+    display: none;
+}
 .chats {
     border-radius: 2vw;
     padding: 0.5px 1vw;
     background-color: rgb(228, 228, 228);
     margin-bottom: 1vw;
 }
+#resizer {
+    touch-action: none;
+    width: 1vw;
+    flex-shrink: 0;
+    cursor: col-resize;
+    background-color: rgb(150, 150, 150);
+    height: 100%;
+    z-index: 10;
+}
+
+#resizer:hover {
+    background-color: rgb(100, 100, 100);
+}
+.resizing-active {
+    cursor: col-resize !important;
+}
+.resizing-active * {
+    pointer-events: none !important; /* Disables all hover effects/logic in chat */
+    user-select: none !important;    /* Stops text selection */
+    transition: none !important;
+}
 #messagesBox {
     flex: 5;
-    border-left: solid;
-    border-color: black;
-    border-left-width: 0.5vw;
-    overflow: hidden;
+    min-width: 30vw;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    background-color: white;
+}
+#chatTitle {
+    font-size: 3vw;
 }
 #chatBar {
     background-color: rgb(200, 200, 200);
@@ -83,9 +177,9 @@ body {
     padding: 0.5vw;
 }
 #messages {
+    flex: 1;
     padding: 0.5vw;
     overflow-y: auto;
-    height: 60vh;
     display: flex;
     flex-direction: column-reverse;
 }
@@ -95,7 +189,7 @@ body {
     margin: 1vw;
     margin-top: 0px;
     width: fit-content;
-    max-width: calc(100% - 10vw);
+    max-width: 80%;
 }
 .right {
     margin-left: auto;
@@ -108,33 +202,55 @@ body {
     border-bottom-left-radius: 0px;
 }
 #typeBar {
-    background-color: rgb(200, 200, 200);
-    padding: 0.5vw;
-    text-align: center;
+    background-color: rgb(235, 235, 235);
+    padding: 15px;
+    display: flex;
+    align-items: flex-end; /* Align button to the bottom of the input */
+    gap: 10px;
+}
+#typeForm {
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+    gap: 10px;
+    margin: 0 auto;
+    max-width: 800px; /* Keeps the chat bar centered and readable */
 }
 #typeInput {
-    width: 30vw;
-    border-radius: 100vw;
-    border: 0px;
-    height: 1.5vw;
-    padding-left: 1vw;
-    padding-top: 0.75vw;
+    width: 100%; /* Fill the container */
+    max-width: 600px; /* Prevent it from getting too wide on desktop */
+    min-height: 40px;
+    max-height: 150px; /* Stop growing after a certain point */
+    
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    
+    font-family: inherit;
+    font-size: 16px; /* 16px prevents iOS from zooming in automatically */
+    resize: none; /* Hide the manual resize handle */
+    outline: none;
+    transition: lightgreen 0.2s;
+}
+#typeInput:focus {
+    border-color: lightgreen;
 }
 #typeBar button {
-    border-radius: 100vw;
-    border-width: 0px;
-    padding: 0.2vw 0.4vw;
-    height: 2vw;
-    width: 4vw;
+    background-color: lightgreen;
+    height: 40px; /* Match the min-height of the input */
+    padding: 0 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
 }
 #typeBar button:hover {
     background-color: rgb(150, 150, 150);
 }
 footer {
+    font-size: 2.5vw;
     background-color: lightgreen;
     text-align: center;
     padding: 1vw 0px;
-    bottom: 0px;
     width: 100vw;
 }
 .footer {
@@ -145,4 +261,97 @@ footer {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
+}
+@media (max-width: 600px) {
+    #main {
+        display: block;
+        position: relative;
+        overflow: hidden; /* Prevents horizontal scrolling when chat is off-screen */
+    }
+
+    #chatsBox {
+        width: 100% !important;
+        height: 100%;
+        /* The list stays put at the base layer */
+    }
+
+    #messagesBox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100%;
+        background-color: white;
+        z-index: 10;
+        
+        /* START STATE: Hidden to the right */
+        transform: translateX(100%); 
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* ACTIVE STATE: When we want to see the messages */
+    body.chat-open #messagesBox {
+        transform: translateX(0%);
+    }
+
+    #resizer {
+        display: none !important;
+    }
+    
+    #settingsIconButton {
+        visibility: hidden;
+        width: 7vw;
+        height: 7vw;
+    }
+    #settingsIconButton:hover {
+        background-color: lightgreen;
+    }
+
+    body.chat-open #settingsIconButton {
+        visibility: visible;
+    }
+    footer {
+        font-size: 4vw;
+    }
+    #toptitle {
+        font-size: 5vw;
+    }
+    #chatTitle {
+        font-size: 4vw;
+    }
+    #chatsTitle {
+        font-size: 3vw;
+    }
+    #settingsIconButton {
+        height: 7vw;
+        width: 7vw;
+    }
+}
+@media (min-width: 951px) {
+    #settingsIconButton:hover {
+        background-color: lightgray;
+    }
+    #toptitle {
+        font-size: 3vw;
+    }
+    #chatsTitle {
+        font-size: 1.5vw;
+    }
+    #chatTitle {
+        font-size: 2vw;
+    }
+    #menuIconButton {
+        width: 6vw;
+        height: 6vw;
+    }
+    #settingsIconButton{
+        width: 4vw;
+        height: 4vw;
+    }
+    .posts {
+        font-size: 1.5vw;
+    }
+    footer {
+        font-size: 1.5vw;
+    }
 }

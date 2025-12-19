@@ -9,7 +9,10 @@
 </head>
 <body>
     <header>
-        <a href="/" draggable="false" id="toptitle">jazhdo</a>
+        <button id="menuIconButton">
+            <div id="menuIcon"></div>
+        </button>
+        <a draggable="false" id="toptitle">jazhdo</a>
         <button id="settingsIconButton">
             <div id="settingsIcon"></div>
         </button>
@@ -31,6 +34,7 @@
                 <div id="chatBottom"></div>
             </div>
         </div>
+        <div id="resizer"></div>
         <div id="messagesBox">
             <div id="chatBar">
                 <a id="chatTitle">Chat title placeholder</a>
@@ -88,7 +92,7 @@
             <div id="typeBar">
                 <!-- Maybe add file attachment option -->
                 <form id="typeForm">
-                    <textarea placeholder="Type here.." id="typeInput"></textarea>
+                    <textarea placeholder="Type here.. ( [shift] + [enter] to get to the next line )" id="typeInput"></textarea>
                     <button type="submit">Submit</button>
                 </form>
                 <!-- Possibly add emoji selection menu -->

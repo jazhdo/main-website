@@ -1,9 +1,9 @@
-// Version 12/16/2025
+// Version 12/21/2025
 
 // Firebase stuff
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc, setDoc, updateDoc, arrayUnion, increment, arrayRemove 
+    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc, setDoc, updateDoc, arrayUnion, increment, arrayRemove, where, onSnapshot, deleteField, deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged
@@ -28,24 +28,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const messageCollection = collection(db, 'chat');
+const messageCollection = collection(db, 'chats');
 let chatId = '';
 
 // Functions
 async function sendMessage(messageData) {
+    if (!messageData.text.trim() || !chatId) {
+        return;
+    }; 
     // metaRef is main data doc, metaSnap is a snapshot of that main data doc
     const metaRef = doc(db, "chats", chatId);
     const metaSnap = await getDoc(metaRef);
-    
-    let currentBucket = 1;
-    let messageCount = 0;
-
-    if (metaSnap.exists()) {
-        currentBucket = metaSnap.data().currentBucket || 1;
-        messageCount = metaSnap.data().totalMessages || 0;
-    };
-
-    // Add another bucket or just get current bucket (bucketRef is the current bucket that is being added to)
+    const messageCount = metaSnap.data().totalMessages || 0;
     const bucketSize = 250;
     const targetBucket = Math.floor(messageCount / bucketSize) + 1;
     const bucketRef = doc(db, "chats", `${chatId}_${targetBucket}`);
@@ -59,12 +53,140 @@ async function sendMessage(messageData) {
     }, { merge: true }); // This is to add the bucket doc (doc_1, doc_2, doc_3, etc. for the same chat) in case it has not yet been created
 
     // Add info to main data doc
+    console.log(`targetBucket: ${targetBucket}, messageData.text: ${messageData.text}, date: ${new Date().toISOString()}`)
     await setDoc(metaRef, {
         totalMessages: increment(1),
         currentBucket: targetBucket,
         lastMessage: messageData.text,
-        updatedAt: new Date()
+        updatedAt: new Date().toISOString()
     }, { merge: true });
+};
+async function updateChat(user) {
+    if (!chatId) {
+        document.getElementById('chatTitle').innerText = '';
+        document.getElementById('chatBar').style.display = 'none';
+        document.querySelectorAll('.posts').forEach((e) => {
+            e.remove();
+        });
+        document.getElementById('typeInput').value = '';
+        return;
+    };
+    const metaRef = doc(db, "chats", chatId);
+    const metaSnap = await getDoc(metaRef);
+    if (metaSnap.data() !== null) {
+        if (metaSnap.data().title !== null) {
+        document.getElementById("chatTitle").innerText = metaSnap.data().title;
+        };
+    };
+    const bucketRef = doc(db, "chats", `${chatId}_${metaSnap.data().currentBucket}`);
+    const bucketSnap = await getDoc(bucketRef);
+
+    let messagesArray = [];
+
+    if (bucketSnap !== null) {
+        if (bucketSnap.data() !== undefined) {
+            messagesArray = bucketSnap.data().messages;
+        };
+    };
+
+    document.querySelectorAll(".posts").forEach(e => {e.remove();});
+
+    messagesArray.forEach(e => {
+        const box = document.createElement("div");
+        const p = document.createElement("p");
+
+        box.className = 'posts';
+        if (e.user == user.uid) {
+            box.classList.add('right');
+            p.textContent = e.text;
+        } else {
+            box.classList.add('left');
+            p.textContent = `${e.user}: ${e.text}`;
+        };
+
+        box.append(p);
+        document.getElementById("messageBottom").after(box);
+    });
+}
+async function getChatList(snapshot, user) {
+    document.querySelectorAll('.chats').forEach(e => {
+        e.remove();
+    })
+    snapshot.docs.map(doc => {
+        // doc is each document that was found that the user was in
+        const data = doc.data();
+        const box = document.createElement("div");
+        const h2 = document.createElement("h2");
+        const p = document.createElement("p");
+
+        box.className = "chats";
+        h2.textContent = data.title || doc.id;
+        p.textContent = data.lastMessage || 'none';
+
+        box.addEventListener('click', (e) => {
+            e.preventDefault();
+            chatId = doc.id;
+            updateChat(user);
+            document.getElementById('chatBar').style.display = '';
+
+            if (window.innerWidth <= 600) {
+                document.body.classList.add('chat-open');
+            };
+        });
+
+        box.append(h2, p);
+        document.getElementById("chatBottom").before(box);
+    });
+};
+async function createChatMenu(userUID) {
+    const h2 = document.createElement('h2');
+    const box = document.createElement("div");
+    const form = document.createElement('form');
+    const title = document.createElement('input');
+    const submit = document.createElement('button');
+    const cancel = document.createElement('button');
+
+    h2.textContent = 'Create New Chat';
+    submit.textContent = 'Create';
+    title.placeholder = 'Chat title';
+    cancel.textContent = 'Cancel'
+    
+    form.id = 'createChatForm';
+    box.id = 'createChatBox';
+    h2.id = 'createChatTitle';
+    title.id = 'createChatInput';
+    submit.id = 'createChatSubmit';
+    cancel.id = 'createChatCancel';
+    submit.type = 'submit';
+    
+    form.append(h2, title, submit, cancel);
+    box.append(form);
+    document.getElementById("main").after(box);
+
+    document.getElementById('createChatCancel').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById("createChatBox").remove();
+    });
+    document.getElementById("createChatForm").addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        chatTitle = document.getElementById("createChatInput").value || 'Chat Title';
+
+        createChat(chatTitle, userUID);
+        document.getElementById("createChatBox").remove();
+    });
+};
+async function createChat(chatTitle, userUID) {
+    const newChat = addDoc(messageCollection, {
+        participants: [userUID],
+        owner: userUID,
+        title: chatTitle,
+        totalMessages: 0,
+        currentBucket: 1,
+        lastMessage: '',
+        updatedAt: new Date()
+    });
+    chatId = newChat.id;
 };
 async function addUser(userUID) {
     const metaRef = doc(db, "chats", chatId);
@@ -73,28 +195,251 @@ async function addUser(userUID) {
         updatedAt: new Date()
     }, { merge: true });
 };
-async function removeUser(userUID) {
-    const metaRef = doc(db, "chats", chatId);
+async function removeUser(userUID, removeChatId) {
+    const metaRef = doc(db, "chats", removeChatId);
     await setDoc(metaRef, {
         participants: arrayRemove(userUID),
         updatedAt: new Date()
     }, { merge: true });
-}
+    const metaSnap = await getDoc(metaRef);
+    if (metaSnap.data().participants.length === 0) {
+        for (let i = metaSnap.data().currentBucket; i >= 0; i--) {
+            await deleteDoc(doc(db, 'chats', `${removeChatId}_${i}`));
+        }
+        await deleteDoc(metaRef);
+    };
+};
+async function renameChat(name) {
+    const metaRef = doc(db, "chats", chatId);
+    await setDoc(metaRef, {
+        title: name,
+        updatedAt: new Date()
+    }, { merge: true });
+};
+
 onAuthStateChanged(auth, async (user) => {
+    // Detect if user is logged in or not. If not, this leads them to the login page to be redirected back here.
     if (!user) {
         alert("Please login to access the chat service. This is implemented for safety reasons.")
         window.location.href = '/login.html?redirect=/chat/';
-    }
-    const chatsBox = document.getElementById('chatsBox');
+    };
+    // Below should be code to run after firebase firestore load
 
-    document.getElementById("typeForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    const q = query(messageCollection, where('participants', 'array-contains', user.uid), orderBy('updatedAt', 'desc'));
 
-        const message = document.getElementById("typeInput").value.trim();
-
-        alert(`Your message containing the contents '${message}' has been sent to nowhere.`);
-        document.getElementById("typeInput").value = "";
+    onSnapshot(q, async (snapshot) => {
+        console.log("Database changed.");
+        if (chatId !== '') {
+            updateChat(user);
+        };
+        getChatList(snapshot, user);
     });
+    document.getElementById("chatCreate").addEventListener('click', () => {
+        createChatMenu(user.uid);
+    });
+    {
+    document.getElementById('addUser').addEventListener('click', () => {
+        if (chatId) {
+            const box = document.createElement('div');
+            const h2 = document.createElement('h2');
+            const form = document.createElement('form');
+            const input = document.createElement('input');
+            const submit = document.createElement('button');
+            const cancel = document.createElement('button');
+
+            h2.textContent = 'Add new user';
+            submit.textContent = 'Add';
+            input.placeholder = 'User UID (Found in profile)';
+            cancel.textContent = 'Cancel'
+            
+            form.id = 'addUserForm';
+            box.id = 'addUserBox';
+            h2.id = 'addUserTitle';
+            input.id = 'addUserInput';
+            submit.id = 'addUserSubmit';
+            cancel.id = 'addUserCancel';
+            submit.type = 'submit';
+
+            form.append(h2, input, submit, cancel);
+            box.append(form);
+            document.getElementById('main').after(box);
+
+            document.getElementById('addUserForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                if (document.getElementById('addUserInput').value.trim()) {
+                    addUser(document.getElementById('addUserInput').value.trim());
+                }
+
+                document.getElementById('addUserBox').remove();
+            });
+        };
+    });
+    document.getElementById('removeUser').addEventListener('click', async () => {
+        if (chatId) {
+            const box = document.createElement('div');
+            const h2 = document.createElement('h2');
+            const form = document.createElement('form');
+            const submit = document.createElement('button');
+            const cancel = document.createElement('button');
+
+            h2.textContent = 'Remove user';
+            submit.textContent = 'Remove';
+            cancel.textContent = 'Cancel'
+            
+            form.id = 'removeUserForm';
+            box.id = 'removeUserBox';
+            h2.id = 'removeUserTitle';
+            submit.id = 'removeUserSubmit';
+            cancel.id = 'removeUserCancel';
+            submit.type = 'submit';
+            
+            const listRef = doc(db, 'chats', chatId);
+            const list = await getDoc(listRef);
+            const participants = list.data().participants;
+            let input = [];
+
+            participants.forEach((e) => {
+                const checkbox = document.createElement('input');
+                const label = document.createElement('label');
+                const br = document.createElement('br');
+                checkbox.type = 'checkbox';
+                checkbox.value = e;
+                checkbox.name = 'removeUser';
+                let text = e;
+                if (user.uid == e) {
+                    text = 'Yourself';
+                };
+                label.append(checkbox, text, br);
+
+                input.push(label);
+            });
+
+            form.append(h2, ...input, submit, cancel);
+            box.append(form);
+            document.getElementById('main').after(box);
+
+            document.getElementById('removeUserForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const checkedBoxes = document.querySelectorAll('input[name="removeUser"]:checked');
+                const removeList = Array.from(checkedBoxes).map(cb => cb.value);
+
+                const removeChatId = chatId;
+
+                await removeList.forEach(async (b) => {
+                    await removeUser(b, removeChatId);
+                });
+                if (removeList.includes(user.uid)) {
+                    chatId = '';
+                };
+                updateChat(user);
+                document.getElementById('removeUserBox').remove();
+            });
+        };
+    });
+    }
+    {
+    let settingsClicked = false;
+    document.getElementById('settingsIconButton').addEventListener('click', async () => {
+        if (settingsClicked === false) {
+            settingsClicked = true;
+            const box = document.createElement('div');
+            const h2 = document.createElement('h2');
+            const x = document.createElement('h2');
+            const topBox = document.createElement('div');
+            const profile = document.createElement('a');
+            const form = document.createElement('form');
+            const chatTitle = document.createElement('input');
+            const participantsList = document.createElement('p');
+            const br = document.createElement('br');
+            const save = document.createElement('button');
+
+            const listRef = doc(db, 'chats', chatId);
+            const list = await getDoc(listRef);
+            const title = list.data().title;
+            const participants = list.data().participants;
+
+            box.id = 'settingsBox';
+            h2.textContent = 'Settings';
+            h2.id = 'settingsTitle';
+            x.id = 'settingsCancel';
+            x.textContent = 'X';
+            topBox.id = 'settingsTopBox'
+            profile.textContent = 'Profile settings link';
+            profile.href = '/login.html';
+            form.id = 'settingsForm';
+            chatTitle.value = title;
+            chatTitle.id = 'settingsInput';
+            participantsList.append('Chat People: ', document.createElement('br'));
+            participants.forEach((e) => {
+                participantsList.append(e, br);
+            });
+            save.id = 'settingsSave';
+            save.textContent = 'Save';
+
+            form.append(chatTitle, save);
+            topBox.append(h2, x);
+            box.append(topBox, profile, document.createElement('br'), 'Chat Title: ', document.createElement('br'),form, participantsList);
+            document.getElementById('main').after(box);
+
+            document.getElementById('settingsCancel').addEventListener('click', () => {
+                document.getElementById('settingsBox').remove();
+                settingsClicked = false;
+            });
+
+            document.getElementById('settingsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const newTitle = document.getElementById('settingsInput').value.trim();
+
+                if (newTitle) {
+                    renameChat(newTitle);
+                };
+                document.getElementById('settingsBox').remove();
+                settingsClicked = false;
+            });
+        };
+    });
+    }
+    {
+    const tx = document.getElementById('typeInput');
+
+    // Set textarea size after page load
+    tx.style.height = "auto";
+    tx.style.height = (tx.scrollTop + tx.scrollHeight) + "px";
+
+    tx.addEventListener("input", function() {
+        // Reset height to calculate correctly
+        this.style.height = "auto";
+        // Set height based on scroll height
+        this.style.height = (this.scrollTop + this.scrollHeight) + "px";
+    });
+    tx.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey && window.innerWidth >= 601) {
+            e.preventDefault();
+            const message = {
+                user: user.uid,
+                text: document.getElementById("typeInput").value.trim()
+            };
+            sendMessage(message);
+            document.getElementById("typeInput").value = "";
+            this.style.height = "auto";
+            this.style.height = (this.scrollTop + this.scrollHeight) + "px";
+        };
+    });
+    document.getElementById("typeForm").addEventListener('submit', (e) => {
+        e.preventDefault();
+        const message = {
+            user: user.uid,
+            text: document.getElementById("typeInput").value.trim()
+        };
+        sendMessage(message);
+        document.getElementById("typeInput").value = "";
+        tx.style.height = "auto";
+        tx.style.height = (tx.scrollTop + tx.scrollHeight) + "px";
+    });
+    }
 });
 
 {
@@ -167,36 +512,13 @@ resizer.addEventListener('touchstart', (e) => {
 });
 }
 {
-const tx = document.getElementById('typeInput');
-
-// Set textarea size after page load
-tx.style.height = "auto";
-tx.style.height = (tx.scrollTop + tx.scrollHeight) + "px";
-
-tx.addEventListener("input", function() {
-    // Reset height to calculate correctly
-    this.style.height = "auto";
-    // Set height based on scroll height
-    this.style.height = (this.scrollTop + this.scrollHeight) + "px";
-});
-tx.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault(); // Prevents a new line from being added
-        const message = document.getElementById("typeInput").value.trim();
-        alert(`Your message containing the contents '${message}' has been sent to nowhere.`);
-        document.getElementById("typeInput").value = "";
-        this.style.height = "auto";
-        this.style.height = (this.scrollTop + this.scrollHeight) + "px";
-    }
-});
-}
-{
 const mainContainer = document.body;
 const menuBtn = document.getElementById('menuIconButton');
 const allChats = document.querySelectorAll('.chats');
 
 // 1. When clicking the Menu Button on mobile, go BACK to the list
-menuBtn.addEventListener('click', () => {
+menuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     if (window.innerWidth <= 600) {
         mainContainer.classList.remove('chat-open'); // Slide messages away
     } else {
@@ -207,7 +529,8 @@ menuBtn.addEventListener('click', () => {
 
 // 2. When clicking a chat in the list, OPEN the messages
 allChats.forEach(chat => {
-    chat.addEventListener('click', () => {
+    chat.addEventListener('click', (e) => {
+        e.preventDefault();
         if (window.innerWidth <= 600) {
             mainContainer.classList.add('chat-open'); // Slide messages in
         }

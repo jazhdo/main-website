@@ -1,4 +1,4 @@
-/* Version 12/18/2025 */
+/* Version 12/21/2025 */
 
 /* 
 @media options:
@@ -53,7 +53,6 @@ body {
     justify-content: flex-start;
     align-items: center;
     border-radius: 50%; /* standard circle */
-    transition: background-color 0.2s ease;
 }
 
 #menuIcon {
@@ -74,24 +73,24 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    
     display: block;
 }
 #settingsIconButton {
     width: 6vw; 
     height: 6vw;
+    min-width: 40px; 
+    min-height: 40px;
 
     margin: 0.5vw;
     
     background-color: lightgreen;
     border: none;
     cursor: pointer;
-    padding: 0;
     
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    border-radius: 100vw;
+    border-radius: 50%;
 }
 #main {
     display: flex;
@@ -109,6 +108,9 @@ body {
     transform: translateZ(0);
     overflow: hidden;
     min-width: 10vw;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 #chatsTitle {
     padding: 0px;
@@ -119,6 +121,8 @@ body {
 #chatsList {
     background-color: rgb(200, 200, 200);
     padding: 1vw;
+    flex: 1;
+    overflow-y: auto;
 }
 .hidden-sidebar {
     flex: none !important;
@@ -132,11 +136,21 @@ body {
 .hidden-sidebar + #resizer {
     display: none;
 }
+#chatCreate {
+    border-radius: 2vw;
+    padding: 0.5px 1vw;
+    background-color: rgb(228, 228, 228);
+    margin-bottom: 1vw;
+    cursor: pointer;
+}
 .chats {
     border-radius: 2vw;
     padding: 0.5px 1vw;
     background-color: rgb(228, 228, 228);
     margin-bottom: 1vw;
+}
+.chats:hover {
+    background-color: rgb(220, 220, 220);
 }
 #resizer {
     touch-action: none;
@@ -169,6 +183,9 @@ body {
 }
 #chatTitle {
     font-size: 3vw;
+}
+#addUser, #removeUser {
+    cursor: pointer;
 }
 #chatBar {
     background-color: rgb(200, 200, 200);
@@ -262,6 +279,35 @@ footer {
     -moz-user-select: none;
     user-select: none;
 }
+h2#addUserTitle, h2#createChatTitle, h2#removeUserTitle, h2#settingsTitle {
+    margin: 1vw 0px;
+}
+#createChatBox, #addUserBox, #removeUserBox, #settingsBox {
+    position: absolute;
+    background-color: lightgreen;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 3vw;
+    padding: 2vw;
+    z-index: 1000;
+}
+h2#settingsTitle {
+    display: inline;
+    margin: 0px;
+}
+#settingsCancel {
+    color: red;
+    display: inline;
+    margin: 0px;
+}
+#settingsCancel:hover {
+    cursor: pointer;
+}
+#settingsTopBox {
+    display: flex;
+    justify-content: space-between;
+}
 @media (max-width: 600px) {
     #main {
         display: block;
@@ -286,9 +332,8 @@ footer {
         
         /* START STATE: Hidden to the right */
         transform: translateX(100%); 
-        transition: transform 0.3s ease-in-out;
+        transition: translateX(100%) 0.3s ease-in-out;
     }
-
     /* ACTIVE STATE: When we want to see the messages */
     body.chat-open #messagesBox {
         transform: translateX(0%);
@@ -298,7 +343,7 @@ footer {
         display: none !important;
     }
     
-    #settingsIconButton {
+    #menuIconButton {
         visibility: hidden;
         width: 7vw;
         height: 7vw;
@@ -307,7 +352,7 @@ footer {
         background-color: lightgreen;
     }
 
-    body.chat-open #settingsIconButton {
+    body.chat-open #menuIconButton {
         visibility: visible;
     }
     footer {
@@ -345,8 +390,8 @@ footer {
         height: 6vw;
     }
     #settingsIconButton{
-        width: 4vw;
-        height: 4vw;
+        width: 3.5vw;
+        height: 3.5vw;
     }
     .posts {
         font-size: 1.5vw;

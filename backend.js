@@ -1,4 +1,4 @@
-// Version 12/16/2025
+// Version 12/21/2025
 
 // Firebase stuff
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -157,6 +157,11 @@ function showAdminContent(user) {
 function profileLoad(user) {
     document.getElementById("profileUID").innerText = `User UID: ${user.uid}`
     document.getElementById("profileEmail").innerText = `User Email: ${user.email}`
+    const chatLink = document.createElement('a');
+    chatLink.href = '/chat/';
+    chatLink.textContent = 'link';
+    document.getElementById('chatLink').innerText = 'Chat link: ';
+    document.getElementById('chatLink').append(chatLink, ' (Best for tablets)');
 }
 
 let loginOption = true;

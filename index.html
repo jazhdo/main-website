@@ -39,7 +39,7 @@
         <p id="jstest">
             Javascript test failed. Please click the button below to try again.
         </p>
-        <button onclick="jstest()">Click here to redo the test.</button>
+        <button id="jstestButton">Click here to redo the test.</button>
     </div>
     <footer>
         <p id="darktest" class="footer">Updated: 12/23/2025 - jazhdo</p>
@@ -47,7 +47,8 @@
         <a class="footer" href="/terms.html">Terms</a>
         <button onclick="lightmode()" id="lightmode" class="footer"></button>
         <script type="module" src="/backend.js"></script>
-        <script src="/script.js">
+        <script src="/script.js"></script>
+        <script>
             let jstestcount = 1
             function jstest() {
                 document.getElementById("jstest").innerText = "Test #" + jstestcount + " Successful.";
@@ -64,8 +65,9 @@
                 const until = (goal - now)/1000/60/60/24;
                 document.getElementById(elementId).innerText = subject + " (" + month + "/" + day + "/" + year + "): in " + until + " days" ;
             };
+            jstest();
+            document.getElementById('jstestButton').addEventListener('onclick',() => { jstest(); });
         </script>
-        <script>jstest();</script>
     </footer>
 </body>
 </html>

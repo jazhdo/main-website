@@ -113,12 +113,19 @@ async function updateChat(user) {
                 p.textContent = `${nameCache[e.user]}: ${e.text}`;
             } else {
                 const usersSnap = await getDoc(doc(db, 'users', e.user));
-                const displayName = usersSnap.exists() ? usersSnap.data().displayName : e.user;
+                const name = usersSnap.exists() ? usersSnap.data().displayName : e.user;
                 
-                nameCache[e.user] = displayName;
-                p.textContent = `${displayName}: ${e.text}`;
+                nameCache[e.user] = name;
+                p.textContent = `${name}: ${e.text}`;
             };
         };
+
+        box.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+
+            
+        });
+
         box.append(p);
         document.getElementById("messageBottom").before(box);
     };

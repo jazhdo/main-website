@@ -3,7 +3,7 @@
 // Firebase stuff
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc
+    getFirestore, collection, addDoc, getDocs, query, orderBy, doc, getDoc, setDoc, where 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
     getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword 
@@ -80,7 +80,7 @@ function timestampToDate(ts) {
         return new Date(ts.seconds * 1000 + (ts.nanoseconds || 0) / 1_000_000);
     }
     return null;
-}
+};
 async function loadContacts() {
     const snapshot = await getDocs(query(collection(db, "messages"), orderBy("createdAt", "desc")));
     snapshot.forEach(doc => {
@@ -154,15 +154,83 @@ function showAdminContent(user) {
     document.getElementById("message-bottom").innerText = "";
 }
 
-function profileLoad(user) {
+async function profileLoad(user) {
     document.getElementById("profileUID").innerText = `User UID: ${user.uid}`
     document.getElementById("profileEmail").innerText = `User Email: ${user.email}`
     const chatLink = document.createElement('a');
     chatLink.href = '/chat/';
     chatLink.textContent = 'link';
     document.getElementById('chatLink').innerText = 'Chat link: ';
-    document.getElementById('chatLink').append(chatLink, ' (Best for tablets)');
-}
+    document.getElementById('chatLink').append(chatLink);
+
+    const form = document.createElement('form');
+    const username = document.createElement('p');
+    const input = document.createElement('input');
+    const displayName = document.createElement('p');
+    const input2 = document.createElement('input');
+    const submit = document.createElement('button');
+    const userRef = doc(db, 'users', user.uid);
+    const usersSnap = await getDoc(userRef);
+
+    if (usersSnap.data() !== undefined) {
+        input.value = usersSnap.data().username;
+        input2.value = usersSnap.data().displayName;
+    } else {
+        await setDoc(userRef, {
+            username: user.uid,
+            displayName: user.uid
+        }, { merge: true });
+        input.value = user.uid;
+        input2.value = user.uid;
+    };
+    username.textContent = 'Username: ';
+    displayName.textContent = 'Display name: ';
+    submit.textContent = 'save';
+
+    input.id = 'username';
+    input2.id = 'displayName';
+    form.id = 'profileForm';
+    submit.id = 'profileSubmit';
+    
+    username.append(input);
+    displayName.append(input2);
+    form.append(username, displayName, submit);
+
+    document.getElementById('profileEmail').before(form);
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newUsername = document.getElementById('username').value.trim();
+        const newDisplayName = document.getElementById('displayName').value.trim();
+
+        const q = query(collection(db, "users"), where("username", "==", newUsername));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty && querySnapshot.docs[0].id !== user.uid) {
+            alert("Username is already taken! Please choose another.");
+            document.getElementById('username').value = usersSnap.data().username;
+            return;
+        }
+        if (newUsername.length == 28) {
+            alert("Username has a possibility of being a user id. Please choose another.");
+            return;
+        }
+        await setDoc(userRef, {
+            username: newUsername, 
+            displayName: newDisplayName
+        }, { merge: true });
+        console.log(`Username changed to '${newUsername}'.`)
+        console.log(`Display name changed to '${newDisplayName}'.`)
+    });
+    document.getElementById('copyUID').addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(user.uid);
+            console.log(`Copied message: '${user.uid}'`);
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        };
+    });
+};
 
 let loginOption = true;
 let loginError = false;

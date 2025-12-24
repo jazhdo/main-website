@@ -265,6 +265,9 @@ a#login-link {
     justify-content: right;
     margin-left: auto;
     display: flex;
+} 
+#profileSubmit, input#username, input#displayName {
+    margin: 0px 1vw;
 }
 div#header-top {
     display: flex;

@@ -83,7 +83,6 @@ body {
 
     margin: 0.5vw;
     
-    background-color: lightgreen;
     border: none;
     cursor: pointer;
     
@@ -151,6 +150,7 @@ body {
 }
 .chats:hover {
     background-color: rgb(220, 220, 220);
+    cursor: pointer;
 }
 #resizer {
     touch-action: none;

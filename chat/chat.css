@@ -193,6 +193,9 @@ body {
     display: flex;
     flex-direction: column-reverse;
 }
+.timestamp {
+    text-align: center;
+}
 .posts {
     border-radius: 2vw;
     padding: 0px 1vw;

@@ -49,7 +49,7 @@ async function sendMessage(messageData, user) {
     } else if (editMessageStatus.status === true) {
         await editMessage(editMessageStatus.docId, editMessageStatus.index, messageData.text);
         editMessageStatus.status = false;
-        updateChat(user);
+        // updateChat(user);
         return;
     };
     // metaRef is main data doc, metaSnap is a snapshot of that main data doc
@@ -215,7 +215,7 @@ async function updateChat(user) {
         document.getElementById('chatTitle').innerText = '';
         document.getElementById('chatBar').style.display = 'none';
         document.getElementById('typeBar').style.display = 'none';
-        document.querySelectorAll('.posts').forEach((e) => {
+        document.querySelectorAll('.posts, .timestamp').forEach((e) => {
             e.remove();
         });
         document.getElementById('typeInput').value = '';
@@ -239,17 +239,33 @@ async function updateChat(user) {
         messagesArray.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     }
 
-    document.querySelectorAll(".posts").forEach(e => {e.remove();});
+    document.querySelectorAll(".posts, .timestamp").forEach(e => {e.remove();});
 
     const nameCache = {}; 
 
     for (const [b, e] of messagesArray.entries()) {
+        const time = document.createElement("p");
         const box = document.createElement("div");
         const p = document.createElement("p");
+
         box.className = 'posts';
-
         box.className += document.getElementById("darktest").classList.contains('darkmode')? ' darkmode' : '';
+        time.className = 'timestamp';
 
+        const date = new Date(e.timestamp);
+        const datePart = date.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+        });
+
+        const timePart = date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false // Set to true if you want AM/PM
+        });
+        time.innerText = `${datePart} at ${timePart}`;
         if (e.user == user.uid) {
             box.classList.add('right');
             p.textContent = e.text;
@@ -294,14 +310,12 @@ async function updateChat(user) {
                 openContextMenu(a, e, user, 'mobile', b, metaSnap, messagesArray);
             }, 500);
         });
-
-        box.addEventListener("pointerup", cancel);
-        box.addEventListener("pointerleave", cancel);
-        box.addEventListener("pointercancel", cancel);
-
         function cancel() {
             clearTimeout(pressTimer);
         };
+        box.addEventListener("pointerup", cancel);
+        box.addEventListener("pointerleave", cancel);
+        box.addEventListener("pointercancel", cancel);
 
         box.addEventListener('contextmenu', (a) => {
             a.preventDefault();
@@ -311,7 +325,8 @@ async function updateChat(user) {
             };
         });
         box.append(p);
-        document.getElementById("messageBottom").before(box);
+        console.log(`Loading message with time ${date} and message ${e.text}`);
+        document.getElementById("messageBottom").before(box, time);
     };
 };
 async function getChatList(snapshot, user) {
